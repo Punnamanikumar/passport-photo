@@ -728,3 +728,98 @@ body {
 .cropper-line, .cropper-point {
     background-color: var(--primary);
 }
+
+/* Responsive Styles for Mobile Devices */
+@media (max-width: 600px) {
+    .app-header {
+        padding: 16px 5%;
+    }
+    .logo {
+        gap: 12px;
+    }
+    .logo h1 {
+        font-size: 20px;
+    }
+    .logo-icon {
+        font-size: 26px;
+    }
+    .app-container {
+        margin: 20px auto;
+        gap: 20px;
+    }
+    .card {
+        padding: 20px 16px;
+        border-radius: var(--radius-md);
+    }
+    .card-header h2 {
+        font-size: 18px;
+    }
+    .step-num {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+    .dropzone {
+        padding: 30px 16px;
+    }
+    .dropzone h3 {
+        font-size: 16px;
+    }
+    .sheet-viewport {
+        padding: 16px 10px;
+    }
+    .sheet-container {
+        max-width: 100%;
+    }
+    .preview-sidebar {
+        gap: 16px;
+    }
+    
+    /* Modal responsive adjustments */
+    .modal-content {
+        width: 95%;
+        max-height: 95vh;
+        border-radius: var(--radius-md);
+    }
+    .modal-header {
+        padding: 14px 16px;
+    }
+    .modal-header h2 {
+        font-size: 16px;
+    }
+    .modal-body {
+        padding: 16px;
+        max-height: 60vh;
+    }
+    .cropper-wrapper {
+        max-height: 45vh;
+    }
+    .modal-footer {
+        flex-direction: column-reverse;
+        gap: 16px;
+        align-items: stretch;
+        padding: 16px;
+    }
+    .cropper-controls {
+        justify-content: center;
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 6px;
+    }
+    .cropper-controls .btn-icon-only {
+        flex: 1;
+        max-width: 44px;
+        height: 40px;
+        font-size: 14px;
+    }
+    .modal-actions {
+        width: 100%;
+        gap: 8px;
+    }
+    .modal-actions .btn {
+        flex: 1;
+        padding: 12px;
+        font-size: 14px;
+    }
+}
+
