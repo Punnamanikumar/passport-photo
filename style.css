@@ -642,6 +642,7 @@ body {
     max-height: 90vh;
     display: flex;
     flex-direction: column;
+    overflow: hidden; /* Prevent child components from spilling out */
     box-shadow: 0 20px 50px rgba(0,0,0,0.6);
     transform: translateY(20px);
     transition: transform 0.3s ease;
@@ -685,6 +686,8 @@ body {
     justify-content: center;
     align-items: center;
     background: #090d16;
+    flex: 1;
+    min-height: 0; /* Ensure content box is constrained by parent flex height */
 }
 
 .cropper-wrapper {
@@ -778,27 +781,27 @@ body {
     /* Modal responsive adjustments */
     .modal-content {
         width: 95%;
-        max-height: 95vh;
+        max-height: 90vh;
         border-radius: var(--radius-md);
     }
     .modal-header {
-        padding: 14px 16px;
+        padding: 12px 16px;
     }
     .modal-header h2 {
         font-size: 16px;
     }
     .modal-body {
-        padding: 16px;
-        max-height: 60vh;
+        padding: 12px 16px;
+        max-height: none; /* Let flex layout determine height */
     }
     .cropper-wrapper {
-        max-height: 45vh;
+        max-height: 38vh; /* Reduce height constraint to guarantee visibility of buttons below */
     }
     .modal-footer {
         flex-direction: column-reverse;
-        gap: 16px;
+        gap: 12px;
         align-items: stretch;
-        padding: 16px;
+        padding: 14px 16px;
     }
     .cropper-controls {
         justify-content: center;
