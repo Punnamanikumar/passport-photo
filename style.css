@@ -781,7 +781,8 @@ body {
     /* Modal responsive adjustments */
     .modal-content {
         width: 95%;
-        max-height: 90vh;
+        max-height: 83vh;
+        max-height: 83dvh; /* Accounts for browser bars on iOS/Android */
         border-radius: var(--radius-md);
     }
     .modal-header {
