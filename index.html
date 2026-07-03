@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passport Photo Studio - Create Print-Ready PDFs</title>
+    <meta name="description" content="Upload multiple photos, crop them to standard passport size (3.5 cm x 4.5 cm), arrange them on an A4 sheet, and download a print-ready PDF in high quality.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Cropper.js CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
+    
+    <!-- FontAwesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="glass-bg"></div>
+    
+    <header class="app-header">
+        <div class="logo">
+            <i class="fa-solid fa-camera-retro logo-icon"></i>
+            <div>
+                <h1>Passport Photo Studio</h1>
+                <p>Upload, Crop & Align in Print-Ready PDF</p>
+            </div>
+        </div>
+    </header>
+
+    <main class="app-container">
+        <!-- STEP 1: UPLOAD ZONE -->
+        <section class="card upload-section">
+            <div class="card-header">
+                <span class="step-num">1</span>
+                <h2>Upload Your Images</h2>
+            </div>
+            
+            <div id="dropzone" class="dropzone">
+                <input type="file" id="file-input" multiple accept="image/png, image/jpeg, image/jpg" class="file-input-hidden">
+                <div class="dropzone-content">
+                    <div class="dropzone-icon-container">
+                        <i class="fa-solid fa-cloud-arrow-up cloud-icon"></i>
+                    </div>
+                    <h3>Drag & drop your files here</h3>
+                    <p>Supports PNG, JPEG, JPG (Min. recommended size: 600x800px)</p>
+                    <button class="btn btn-primary" id="select-btn">
+                        <i class="fa-solid fa-images"></i> Browse Files
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- STEP 2: IMAGE QUEUE & CROPPING STATUS -->
+        <section class="card queue-section hidden" id="queue-section">
+            <div class="card-header">
+                <span class="step-num">2</span>
+                <h2>Crop and Configure</h2>
+            </div>
+            <p class="section-desc">Passport size requires 3.5 cm x 4.5 cm (locked aspect ratio). Set number of copies for each image.</p>
+            
+            <div id="queue-grid" class="queue-grid">
+                <!-- Dynamic cards populated by JS -->
+            </div>
+        </section>
+
+        <!-- STEP 3: PREVIEW & EXPORT -->
+        <section class="card preview-section hidden" id="preview-section">
+            <div class="card-header">
+                <span class="step-num">3</span>
+                <h2>Print Sheet Preview</h2>
+            </div>
+            
+            <div class="preview-layout">
+                <!-- Preview Settings Sidebar -->
+                <div class="preview-sidebar">
+                    <div class="settings-group">
+                        <h3>Layout Settings</h3>
+                        <div class="setting-item">
+                            <label for="paper-size">Paper Size</label>
+                            <select id="paper-size" class="form-input">
+                                <option value="a4" selected>A4 (210 x 297 mm)</option>
+                                <option value="letter">US Letter (215.9 x 279.4 mm)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item">
+                            <label for="bg-fill">Fill transparent backgrounds</label>
+                            <select id="bg-fill" class="form-input">
+                                <option value="white" selected>Solid White (Standard)</option>
+                                <option value="none">Original (Transparency)</option>
+                            </select>
+                        </div>
+                        <div class="setting-item-row">
+                            <input type="checkbox" id="show-crop-marks" checked>
+                            <label for="show-crop-marks">Show thin cut guidelines</label>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-summary">
+                        <h3>Summary</h3>
+                        <div class="stat-row">
+                            <span>Total Photos:</span>
+                            <strong id="stat-total-photos">0</strong>
+                        </div>
+                        <div class="stat-row">
+                            <span>Pages Generated:</span>
+                            <strong id="stat-total-pages">0</strong>
+                        </div>
+                        <p class="stats-tip"><i class="fa-solid fa-circle-info"></i> Adjust copies or crop photos to update layout.</p>
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn btn-success btn-large" id="download-pdf-btn">
+                            <i class="fa-solid fa-file-pdf"></i> Download PDF
+                        </button>
+                        <button class="btn btn-danger" id="clear-all-btn">
+                            <i class="fa-solid fa-trash-can"></i> Clear All
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Virtual A4/Letter Sheet Container -->
+                <div class="sheet-viewport">
+                    <div class="sheet-controls">
+                        <button class="btn btn-secondary btn-icon" id="prev-page-btn" disabled>
+                            <i class="fa-solid fa-chevron-left"></i>
+                        </button>
+                        <span id="page-indicator">Page 1 of 1</span>
+                        <button class="btn btn-secondary btn-icon" id="next-page-btn" disabled>
+                            <i class="fa-solid fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="sheet-container">
+                        <!-- Simulated Paper Sheet -->
+                        <div id="virtual-sheet" class="virtual-sheet paper-a4">
+                            <!-- Live layout dynamically positioned here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- CROPPER MODAL -->
+    <div class="modal-overlay hidden" id="crop-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Crop to Passport Size (3.5 x 4.5 cm)</h2>
+                <button class="modal-close-btn" id="crop-modal-close"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="cropper-wrapper">
+                    <img id="cropper-image" src="" alt="To Crop">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <div class="cropper-controls">
+                    <button class="btn btn-secondary btn-icon-only" id="crop-rotate-left" title="Rotate Left">
+                        <i class="fa-solid fa-rotate-left"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-icon-only" id="crop-rotate-right" title="Rotate Right">
+                        <i class="fa-solid fa-rotate-right"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-icon-only" id="crop-zoom-in" title="Zoom In">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-icon-only" id="crop-zoom-out" title="Zoom Out">
+                        <i class="fa-solid fa-magnifying-glass-minus"></i>
+                    </button>
+                    <button class="btn btn-secondary btn-icon-only" id="crop-reset" title="Reset Image">
+                        <i class="fa-solid fa-arrow-rotate-left"></i>
+                    </button>
+                </div>
+                <div class="modal-actions">
+                    <button class="btn btn-secondary" id="crop-cancel-btn">Cancel</button>
+                    <button class="btn btn-primary" id="crop-save-btn">Apply Crop</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jsPDF Library CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    
+    <!-- Cropper.js Library CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+    
+    <!-- App Logic -->
+    <script src="app.js"></script>
+</body>
+</html>
